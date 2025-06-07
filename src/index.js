@@ -4,6 +4,7 @@ const ingestion = require('./ingestion');
 require('./worker');
 require('./dashboard');
 const logger = require('./logger');
+const storage = require('./storage');
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
