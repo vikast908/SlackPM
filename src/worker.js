@@ -6,12 +6,16 @@
 const ingestion = require('./ingestion');
 const storage = require('./storage');
 const franc = require('franc');
-const Filter = require('bad-words');
 const chrono = require('chrono-node');
 const nlp = require('compromise');
 const logger = require('./logger');
 
-const profanityFilter = new Filter();
+const profaneWords = ['bad', 'crap', 'damn'];
+
+function isProfane(text) {
+  const lower = text.toLowerCase();
+  return profaneWords.some(word => lower.includes(word));
+}
 
 // Metrics to track processing performance.
 let messagesProcessed = 0;
@@ -44,7 +48,7 @@ function runNLP(message) {
   // Language detection
   const language = franc(message.text || '');
   // Profanity filter
-  const containsProfanity = profanityFilter.isProfane(message.text || '');
+  const containsProfanity = isProfane(message.text || '');
   // Named-entity recognition (dates, people, products)
   const doc = nlp(message.text || '');
   const people = doc.people().out('array');
@@ -110,7 +114,14 @@ function processQueue() {
     lastProcessedTime = now;
   }
 }
+// Run every second
+setInterval(processQueue, 1000);
 
+module.exports = {
+  runNLP,
+  processQueue
+};
+=======
 // Run the processor every second, but only if not in a 'test' environment
 // to prevent interference with automated tests.
 if (process.env.NODE_ENV !== 'test') {

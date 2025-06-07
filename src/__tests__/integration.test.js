@@ -1,7 +1,9 @@
 const { App } = require('@slack/bolt');
+jest.mock('franc', () => () => 'en');
 const ingestion = require('../ingestion');
 const storage = require('../storage');
 const { processQueue } = require('../worker');
+=======
 
 // Mock franc to avoid ESM issues in tests
 jest.mock('franc', () => () => 'en');
@@ -54,7 +56,8 @@ describe('Integration Tests', () => {
       // Manually enqueue the event
       ingestion.enqueue(event);
     }
-
+    // Process queued events synchronously
+=======
     // Process the queue immediately
     processQueue();
 

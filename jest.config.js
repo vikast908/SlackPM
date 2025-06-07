@@ -15,6 +15,7 @@ module.exports = {
   // The 'transformIgnorePatterns' property lists files that should NOT be transformed by Babel.
   // By default, Jest does not transform anything inside the 'node_modules' directory for performance reasons.
   transformIgnorePatterns: [
+=======
     // This regular expression creates an exception to the default rule.
     // It's a negative lookahead that tells Jest: "Do NOT ignore these specific modules for transformation."
     // This forces Jest to transpile 'franc', 'trigram-utils', 'bad-words', and 'badwords-list'
