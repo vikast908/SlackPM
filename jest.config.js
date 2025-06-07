@@ -3,6 +3,6 @@ module.exports = {
     '^.+\\.js$': 'babel-jest'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(franc|trigram-utils)/)'
+    'node_modules/(?!(franc|trigram-utils|bad-words|badwords-list)/)'
   ]
-}; 
+};
