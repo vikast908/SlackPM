@@ -1,4 +1,5 @@
 const { App } = require('@slack/bolt');
+jest.mock('franc', () => () => 'en');
 const ingestion = require('../ingestion');
 const storage = require('../storage');
 const { processQueue } = require('../worker');
@@ -54,7 +55,7 @@ describe('Integration Tests', () => {
       // Manually enqueue the event
       ingestion.enqueue(event);
     }
-
+    // Process queued events synchronously
     // Process the queue immediately
     processQueue();
 
