@@ -3,6 +3,15 @@ jest.mock('franc', () => () => 'en');
 const ingestion = require('../ingestion');
 const storage = require('../storage');
 const { processQueue } = require('../worker');
+=======
+
+// Mock franc to avoid ESM issues in tests
+jest.mock('franc', () => () => 'en');
+jest.mock('bad-words', () => {
+  return jest.fn().mockImplementation(() => ({
+    isProfane: () => true
+  }));
+});
 
 // Mock Slack app
 const app = new App({
@@ -47,8 +56,9 @@ describe('Integration Tests', () => {
       // Manually enqueue the event
       ingestion.enqueue(event);
     }
-
     // Process queued events synchronously
+=======
+    // Process the queue immediately
     processQueue();
 
     // Assert tasks are extracted and stored
