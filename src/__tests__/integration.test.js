@@ -1,6 +1,8 @@
 const { App } = require('@slack/bolt');
+jest.mock('franc', () => () => 'en');
 const ingestion = require('../ingestion');
 const storage = require('../storage');
+const { processQueue } = require('../worker');
 
 // Mock Slack app
 const app = new App({
@@ -46,8 +48,8 @@ describe('Integration Tests', () => {
       ingestion.enqueue(event);
     }
 
-    // Wait for processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Process queued events synchronously
+    processQueue();
 
     // Assert tasks are extracted and stored
     const tasks = [];
