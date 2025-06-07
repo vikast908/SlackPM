@@ -1,6 +1,7 @@
 const { App } = require('@slack/bolt');
 require('dotenv').config();
 const ingestion = require('./ingestion');
+const storage = require('./storage');
 require('./worker');
 require('./dashboard');
 const logger = require('./logger');

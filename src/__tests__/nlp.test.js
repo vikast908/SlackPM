@@ -1,5 +1,10 @@
 // Mock franc
 jest.mock('franc', () => () => 'en');
+jest.mock('bad-words', () => {
+  return jest.fn().mockImplementation(() => ({
+    isProfane: (text) => /bad/i.test(text)
+  }));
+});
 
 const { runNLP } = require('../worker');
 

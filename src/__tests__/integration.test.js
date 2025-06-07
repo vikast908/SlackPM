@@ -1,6 +1,14 @@
+jest.mock('franc', () => () => 'en');
+jest.mock('bad-words', () => {
+  return jest.fn().mockImplementation(() => ({
+    isProfane: () => false
+  }));
+});
+
 const { App } = require('@slack/bolt');
 const ingestion = require('../ingestion');
 const storage = require('../storage');
+const { processQueue } = require('../worker');
 
 // Mock Slack app
 const app = new App({
@@ -39,15 +47,14 @@ describe('Integration Tests', () => {
     }
   });
 
-  test('processes Slack events and extracts tasks', async () => {
+  test('processes Slack events and extracts tasks', () => {
     // Simulate receiving events
     for (const event of mockEvents) {
-      // Manually enqueue the event
       ingestion.enqueue(event);
     }
 
-    // Wait for processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Process the queue synchronously
+    processQueue();
 
     // Assert tasks are extracted and stored
     const tasks = [];
