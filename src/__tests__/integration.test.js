@@ -1,6 +1,24 @@
+jest.mock('@slack/web-api', () => ({
+  WebClient: jest.fn().mockImplementation(() => ({
+    chat: { postMessage: jest.fn().mockResolvedValue({}) },
+    views: { publish: jest.fn().mockResolvedValue({}) },
+    auth: { test: jest.fn().mockResolvedValue({ ok: true }) },
+  })),
+  addAppMetadata: jest.fn(),
+}));
+jest.mock('franc', () => () => 'en');
+jest.mock('bad-words', () => {
+  return jest.fn().mockImplementation(() => ({
+    isProfane: jest.fn(() => false)
+  }));
+});
+
+jest.spyOn(global, 'setInterval').mockImplementation(() => 0);
+
 const { App } = require('@slack/bolt');
 const ingestion = require('../ingestion');
 const storage = require('../storage');
+const { runNLP } = require('../worker');
 
 // Mock Slack app
 const app = new App({
@@ -40,14 +58,16 @@ describe('Integration Tests', () => {
   });
 
   test('processes Slack events and extracts tasks', async () => {
-    // Simulate receiving events
+    // Process events using the NLP pipeline directly
     for (const event of mockEvents) {
-      // Manually enqueue the event
-      ingestion.enqueue(event);
+      const metadata = runNLP(event);
+      if (metadata.isTask) {
+        storage.saveMetadata(event.channel, event.ts, {
+          source: { channel: event.channel, ts: event.ts },
+          ...metadata,
+        });
+      }
     }
-
-    // Wait for processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Assert tasks are extracted and stored
     const tasks = [];

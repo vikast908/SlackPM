@@ -95,4 +95,6 @@ function processQueue() {
 }
 
 // Run every second
-setInterval(processQueue, 1000); 
+setInterval(processQueue, 1000);
+
+module.exports = { runNLP };

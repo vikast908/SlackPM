@@ -1,5 +1,10 @@
-// Mock franc
+// Mock franc and bad-words to avoid loading external implementations
 jest.mock('franc', () => () => 'en');
+jest.mock('bad-words', () => {
+  return jest.fn().mockImplementation(() => ({
+    isProfane: jest.fn(() => true)
+  }));
+});
 
 const { runNLP } = require('../worker');
 
