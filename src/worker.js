@@ -10,8 +10,14 @@ const chrono = require('chrono-node');
 const nlp = require('compromise');
 const logger = require('./logger');
 
+// A simple, custom list of profane words for filtering.
 const profaneWords = ['bad', 'crap', 'damn'];
 
+/**
+ * Checks if a given text contains any of the words from the profaneWords list.
+ * @param {string} text The text to check.
+ * @returns {boolean} True if the text contains profanity, false otherwise.
+ */
 function isProfane(text) {
   const lower = text.toLowerCase();
   return profaneWords.some(word => lower.includes(word));
@@ -114,14 +120,7 @@ function processQueue() {
     lastProcessedTime = now;
   }
 }
-// Run every second
-setInterval(processQueue, 1000);
 
-module.exports = {
-  runNLP,
-  processQueue
-};
-=======
 // Run the processor every second, but only if not in a 'test' environment
 // to prevent interference with automated tests.
 if (process.env.NODE_ENV !== 'test') {
