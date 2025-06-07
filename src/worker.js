@@ -94,5 +94,9 @@ function processQueue() {
   }
 }
 
-// Run every second
-setInterval(processQueue, 1000); 
+// Run every second when not under test
+if (process.env.NODE_ENV !== 'test') {
+  setInterval(processQueue, 1000);
+}
+
+module.exports = { runNLP, processQueue };
